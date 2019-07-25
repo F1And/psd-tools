@@ -103,9 +103,10 @@ def convert_layer_to_pil(layer, apply_icc=True, **kwargs):
     mode = get_pil_mode(header.color_mode.name)
     channels = _check_channels(channels, header.color_mode)
     image = Image.merge(mode, channels)
-    if mode == 'CMYK':
-        image = image.point(lambda x: 255 - x)
     if alpha is not None:
+        if mode == 'CMYK':
+            image = image.point(lambda x: 255 - x)
+            image.putalpha(alpha)
         if mode in ('RGB', 'L'):
             image.putalpha(alpha)
         else:
